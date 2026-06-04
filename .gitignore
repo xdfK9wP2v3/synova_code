@@ -20,3 +20,5 @@ ros_workspace/Camera
 .pdf
 
 *rosbag2*/
+
+!localization/docs/images/*.png
