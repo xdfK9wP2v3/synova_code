@@ -32,7 +32,7 @@ This `tracker` package implements the **pose estimation software stack** describ
 
 Aligned sensor streams drive alternating **measurement updates** and **kinetic prediction** inside the ES-UKF. The filter state can include orientation **q**, angular rate **ω**, position **p**, velocity **v**, acceleration **a**, and higher-order motion terms depending on the active trackers.
 
-  
+![ES UKF](docs/images/online_esukf.png)
 ***Fig. 1** — Online ES-UKF pipeline (SYNOVA §6.2). IMU / RTK / magnetometer / barometer are fused on a unified sync timeline.*
 
 ### What the code implements
@@ -54,7 +54,7 @@ Aligned sensor streams drive alternating **measurement updates** and **kinetic p
 
 For dataset evaluation and mapping, we track a rigid **three-plane trihedral target** in point clouds. The pipeline matches **SYNOVA Figure 9** and §6.3: initialize pose from geometry, track online per scan, then refine with RTS smoothing.
 
-  
+![Lidar Tracking](docs/images/offline_lidar_tracking.png)
 ***Fig. 2** — Offline LiDAR pipeline (cf. **Figure 9** in the SYNOVA paper): projection & plane extraction → pose init → MC-UKF tracking → RTS smoothing.*
 
 ### Pipeline ↔ source files
