@@ -1,0 +1,36 @@
+FROM ros:humble
+
+RUN apt-get update && apt-get install -y openssh-server \
+    tar \
+    python3-dev \
+    python3-pip
+
+RUN apt-get update && apt-get install -y \
+    ros-humble-pcl-conversions \
+    ros-humble-pcl-msgs \
+    libpcl-dev \
+    liblz4-dev \
+    pcl-tools \
+    ros-humble-rosbag2-storage-mcap \
+    ros-humble-foxglove-bridge
+
+RUN apt-get update && apt-get install -y \
+    usbutils \
+    netcat \
+    iproute2 \
+    iputils-ping \
+    net-tools \
+    iptables \
+    wireguard
+
+RUN pip install opencv-python \
+    numpy \
+    lz4
+
+# set up camera drivers
+COPY libMVSDK.so /lib
+
+# set up radar drivers
+COPY ros_workspace/src/radar_driver/driver/libftd2xx-x86_64-1.4.27.tgz /tmp/
+COPY ros_workspace/src/radar_driver/driver/ftdi_driver.sh /tmp/
+RUN chmod +x /tmp/ftdi_driver.sh && /tmp/ftdi_driver.sh && rm -rf /tmp/libftd2xx-x86_64-1.4.27.tgz /tmp/release /tmp/ftdi_driver.sh

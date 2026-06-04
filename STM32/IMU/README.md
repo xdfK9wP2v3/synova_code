@@ -1,0 +1,5 @@
+# IMU
+
+**STM32H743IIT6**
+
+**Sensors:** ADIS16470 + LPS22 + LPS28 + MAG3110

@@ -1,0 +1,26 @@
+{
+  "camera": {
+    "exposure_time_us": 5400.0,
+    "trigger_mode": 2,
+    "strobe_pulse_width": 800,
+    "buffer_count": 50,
+    "max_camera_enum": 2,
+    "image_capture_timeout_ms": 100,
+    "analog_gain": 500
+  },
+  "timing": {
+    "ticks_per_second": 12000,
+    "ticks_per_frame": 499,
+    "frame_gap_tolerance_ns": 300000.0,
+    "tms_gap_tolerance_ns": 200000.0
+  },
+  "network": {
+    "ip_suffix": 50
+  },
+  "processing": {
+    "thread_count": 8
+  },
+  "constants": {
+    "nanosecond_per_second": 1e9
+  }
+}

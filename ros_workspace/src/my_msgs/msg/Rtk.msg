@@ -1,0 +1,12 @@
+TimeStamp ts
+string frame_id
+uint32 utc_hour
+uint32 utc_min
+float64 utc_sec
+float64 lat
+float64 lon
+float64 alt
+float64 heading
+uint32 bs_id
+uint32 state
+float64 rtcm_age

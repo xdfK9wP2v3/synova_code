@@ -1,0 +1,15 @@
+
+
+#ifndef DIGITAL_PLL_PERIPHERAL_MAPPING_H
+#define DIGITAL_PLL_PERIPHERAL_MAPPING_H
+
+#define MAIN_TIM htim1
+
+#define NMEA_UART huart3
+#define BKP_UART huart1
+#define MSG_UART
+
+#define SYS_STATE_SPI hspi5
+#define SD_CARD_SPI
+
+#endif //DIGITAL_PLL_PERIPHERAL_MAPPING_H

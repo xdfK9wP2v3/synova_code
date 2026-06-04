@@ -1,0 +1,318 @@
+version: '3.8'
+
+services:
+  sync:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: sync_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.140"
+    command: bash -c "chrt -f 90 taskset -c 5,6 ros2 run tcp_sensor_driver sync_main"
+    deploy:
+      resources:
+        reservations:
+          cpus: '2'
+
+  adis:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: adis_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.139"
+    command: bash -c "chrt -f 90 taskset -c 7,8 ros2 run tcp_sensor_driver adis_main"
+    deploy:
+      resources:
+        reservations:
+          cpus: '2'
+
+  rtk:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: rtk_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.138"
+    command: ros2 run tcp_sensor_driver rtk_main
+
+  mag:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: mag_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.137"
+    command: ros2 run tcp_sensor_driver mag_main
+
+  lps22:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: lps22_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.136"
+    command: ros2 run tcp_sensor_driver lps22_main
+
+  lps28:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: lps28_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.135"
+    command: ros2 run tcp_sensor_driver lps28_main
+    
+  rtcm:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: rtcm_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.134"
+    command: >
+      sh -c '
+      if [ "$${SUBNET}" = "11" ]; then
+        ros2 run tcp_sensor_driver rtcm_main;
+      else
+        echo "SUBNET is $${SUBNET}, skipping command...";
+        sleep infinity;
+      fi
+      '
+
+  camera:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: camera_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.178"
+    cpuset: "3-12"  # bind CPU cores
+    command: bash -c "chrt -f 89 ros2 run camera_driver publisher"
+    
+  camera2:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: camera2_ros2
+#    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.179"
+    cpuset: "3-12"  # bind CPU cores
+    command: bash -c "chrt -f 89 ros2 run camera_driver2 publisher"
+
+  lidar:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: lidar_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.146"
+    command: ros2 launch src/livox_ros2_driver/launch/livox_lidar_launch.py
+
+  radar:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: radar_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.99"
+    command: ros2 launch src/radar_driver_cpp/launch/radar_cpp.launch.py
+
+  viewer:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: viewer_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.200"
+    command: ros2 run viewer cam_viewer
+
+  foxglove:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: foxglove_ros2
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.220"
+#      nat_net:
+#        ipv4_address: 172.18.0.3
+    ports:
+      - "8765:8765"
+    command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml address:=192.168.${SUBNET}.220 send_buffer_limit:=900000000
+#    command: [ "sh", "-c", "export FASTRTPS_DEFAULT_PROFILES_FILE=super_client_conf/super_client_subnet${SUBNET}.xml && exec ros2 launch foxglove_bridge foxglove_bridge_launch.xml address:=192.168.${SUBNET}.220 send_buffer_limit:=900000000"]
+
+  bag:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: bag_ros2
+    restart: always
+    privileged: True
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    stop_grace_period: 10s
+    volumes:
+      - /dev:/dev
+      - ${HOME}/Documents/ROS2_docker/ros_workspace:/ros_workspace
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.201"
+    command: ros2 bag record -s mcap --all
+#    command: [ "sh", "-c", "export FASTRTPS_DEFAULT_PROFILES_FILE=super_client_conf/super_client_subnet${SUBNET}.xml && exec ros2 bag record -s mcap --all" ]
+
+  vpn:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    image: base:v1
+    container_name: vpn_container
+    restart: always
+    privileged: true
+    init: true
+    environment:
+      - SUBNET=${SUBNET:-12}
+    volumes:
+      - /dev:/dev
+    networks:
+      macvlan_setting:
+        ipv4_address: "192.168.${SUBNET}.1"
+      nat_net:
+        ipv4_address: 172.18.0.2
+    command: [ "sh", "-c", "wg-quick up wg_${SUBNET} && exec fastdds discovery -i 0 -l 192.168.${SUBNET}.1 -p 11811" ]
+
+networks:
+  macvlan_setting:
+    driver: macvlan
+    driver_opts:
+      parent: enp2s0f1np1
+      mtu: 9000
+    ipam:
+      config:
+        - subnet: "192.168.${SUBNET}.0/24"
+          gateway: "192.168.${SUBNET}.254"
+
+  nat_net:
+      driver: bridge
+      ipam:
+        config:
+          - subnet: 172.18.0.0/16
+            gateway: 172.18.0.1
